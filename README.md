@@ -1,4 +1,5 @@
 [![build](https://github.com/ahmadkabdullah/winela/actions/workflows/build-test.yml/badge.svg?branch=main)](https://github.com/ahmadkabdullah/winela/actions/workflows/build-test.yml)
+![release](https://img.shields.io/github/v/release/ahmadkabdullah/winela?include_prereleases&label=Release)
 ![license](https://img.shields.io/github/license/ahmadkabdullah/winela?label=License&style=flat&color=yellow)
 ![lines](https://img.shields.io/tokei/lines/github/ahmadkabdullah/winela?label=Lines)
 
