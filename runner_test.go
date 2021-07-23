@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"testing"
 )
@@ -16,32 +17,32 @@ func TestRunFromList(t *testing.T) {
 		ParamRunProg int
 		ParamFork  bool
 	}{
-		{
-			Description: "fork launch first in list with wine and its params",
-			ExpectedErr: nil,
-			ParamRunner: Runner{
-				Program:     "wine",
-				ProgramArgs: "",
-				List: []exe{
-					{1, "rufus", PathJoin(TestDir, "rufus.exe")},
-				},
-			},
-			ParamRunProg: 1,
-			ParamFork: true,
-		},
 		// {
-		// 	Description: "fork launch a number out of the range of list",
-		// 	ExpectedErr: fmt.Errorf("exe number %d: not in list", 5),
+		// 	Description: "fork launch first in list with wine and its params",
+		// 	ExpectedErr: nil,
 		// 	ParamRunner: Runner{
 		// 		Program:     "wine",
 		// 		ProgramArgs: "",
 		// 		List: []exe{
-		// 			{1, "PS", PathJoin(TestDir, "PS.exe")},
+		// 			{1, "rufus", PathJoin(TestDir, "rufus.exe")},
 		// 		},
 		// 	},
-		// 	ParamRunProg: 5,
+		// 	ParamRunProg: 1,
 		// 	ParamFork: true,
 		// },
+		{
+			Description: "fork launch a number out of the range of list",
+			ExpectedErr: fmt.Errorf("exe number %d: not in list", 5),
+			ParamRunner: Runner{
+				Program:     "wine",
+				ProgramArgs: "",
+				List: []exe{
+					{1, "PS", PathJoin(TestDir, "PS.exe")},
+				},
+			},
+			ParamRunProg: 5,
+			ParamFork: true,
+		},
 	}
 
 	for _, testCase := range testTable {
