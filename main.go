@@ -13,7 +13,7 @@ func main() {
 		os.Exit(returnedCode)
 	}
 
-	fmt.Println(`winel [opts]
+	fmt.Println(`winela [opts]
 	-r   [num]   # run a program from the list
 	-R   [num]   # run a program without forking the process
 	-s   [dir]   # scan a directory to populate list with
@@ -93,7 +93,7 @@ func Launch(args []string) int {
 
 		fmt.Printf("stat: dir %s was scanned\n", dirToScan)
 
-		// export the scanned dir to wineldb
+		// export the scanned dir to wineladb
 		var exportErr = ExportToFile(rnr.ListFile, list)
 		if exportErr != nil {
 			fmt.Printf("exporting scanned list error: %s\n", exportErr.Error())

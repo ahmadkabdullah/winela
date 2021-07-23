@@ -24,14 +24,14 @@ type Runner struct {
 func RunnerInitMake() (ret Runner) {
 	// fix: deal with confdir error
 	var confDir, _ = os.UserConfigDir()
-	var progDir = PathJoin(confDir, "winel")
+	var progDir = PathJoin(confDir, "winela")
 
 	// set defaults
 	ret.Program = "wine"
 	ret.ProgramArgs = ""
 	ret.List = []exe{}
-	ret.ConfigFile = PathJoin(progDir, "winelrc")
-	ret.ListFile = PathJoin(progDir, "wineldb")
+	ret.ConfigFile = PathJoin(progDir, "winelarc")
+	ret.ListFile = PathJoin(progDir, "wineladb")
 
 	// try import and go from there
 
