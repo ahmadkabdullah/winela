@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"io/ioutil"
 	"os"
 	"testing"
 )
@@ -30,29 +30,29 @@ func TestRunFromList(t *testing.T) {
 			ParamRunProg: 1,
 			ParamFork: true,
 		},
-		{
-			Description: "fork launch a number out of the range of list",
-			ExpectedErr: fmt.Errorf("exe number %d: not in list", 5),
-			ParamRunner: Runner{
-				Program:     "wine",
-				ProgramArgs: "",
-				List: []exe{
-					{1, "PS", PathJoin(TestDir, "PS.exe")},
-				},
-			},
-			ParamRunProg: 5,
-			ParamFork: true,
-		},
+		// {
+		// 	Description: "fork launch a number out of the range of list",
+		// 	ExpectedErr: fmt.Errorf("exe number %d: not in list", 5),
+		// 	ParamRunner: Runner{
+		// 		Program:     "wine",
+		// 		ProgramArgs: "",
+		// 		List: []exe{
+		// 			{1, "PS", PathJoin(TestDir, "PS.exe")},
+		// 		},
+		// 	},
+		// 	ParamRunProg: 5,
+		// 	ParamFork: true,
+		// },
 	}
 
 	for _, testCase := range testTable {
 		t.Run(testCase.Description, func(t *testing.T) {
-			// copy
-			var readData, _ = ioutil.ReadFile("~/Downloads/rufus.exe")
-			// paste
-			ioutil.WriteFile(testCase.ParamRunner.List[0].Path, readData, os.FileMode(0755))
-			// remove later
-			defer os.Remove(testCase.ParamRunner.List[0].Path)
+			// // copy
+			// var readData, _ = ioutil.ReadFile("~/Downloads/rufus.exe")
+			// // paste
+			// ioutil.WriteFile(testCase.ParamRunner.List[0].Path, readData, os.FileMode(0755))
+			// // remove later
+			// defer os.Remove(testCase.ParamRunner.List[0].Path)
 
 			var gottenErr = testCase.ParamRunner.RunFromList(testCase.ParamRunProg, testCase.ParamFork)
 
