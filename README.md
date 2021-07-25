@@ -1,12 +1,11 @@
 [![build](https://github.com/ahmadkabdullah/winela/actions/workflows/build-test.yml/badge.svg?branch=main)](https://github.com/ahmadkabdullah/winela/actions/workflows/build-test.yml)
 ![release](https://img.shields.io/github/v/release/ahmadkabdullah/winela?include_prereleases&label=Release)
 ![license](https://img.shields.io/github/license/ahmadkabdullah/winela?label=License&style=flat&color=yellow)
-![lines](https://img.shields.io/tokei/lines/github/ahmadkabdullah/winela?label=Lines)
 
-Winela is a commandline launcher for executables through winehq.
+Winela is a commandline launcher for executables through winehq. It is meant to help with finding and executing exe files without installing bloated programs that typically limit you to installing from things.
 
 ## Usage
-Winela operates on two files stored in **winela** dir which in turn is in config dir (usually **~/.config/winela/**):
+Winela operates on two files stored in specific dir in the config dir (usually **~/.config/winela/**):
 - **wineladb**: storing list of exes to launch
 - **winelarc**: containing configuration for specifying wine version and parameters.
 
