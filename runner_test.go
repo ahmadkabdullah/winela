@@ -2,9 +2,84 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"testing"
 )
+
+func TestRunnerReadConfig(t *testing.T) {
+	os.MkdirAll(TestDir, 0755)
+	defer os.RemoveAll(TestDir)
+
+	var testTable = []struct {
+		Description       string
+		Expected          Runner
+		ParamRunner       Runner
+		ParamConfigString string
+		ParamConfigFile   string
+		ParamModifyTo     string
+	}{
+		{
+			Description: "read a config with program set us wine staging",
+			Expected: Runner{
+				Program:     "wine-staging",
+				ProgramArgs: "",
+				List:        []exe{},
+				ConfigFile:  PathJoin(TestDir, "winelarc"),
+			},
+			ParamRunner: Runner{
+				ConfigFile: PathJoin(TestDir, "winelarc"),
+			},
+			ParamConfigString: "Program : wine-staging\n" +
+				"ProgramArgs : ",
+			ParamConfigFile: PathJoin(TestDir, "winelarc"),
+			ParamModifyTo:   "",
+		},
+		{
+			Description: "read a config with program set us wine staging",
+			Expected: Runner{
+				Program:     "wine",
+				ProgramArgs: "",
+				List:        []exe{},
+				ConfigFile:  PathJoin(TestDir, "winelarc"),
+			},
+			ParamRunner: Runner{
+				ConfigFile: PathJoin(TestDir, "winelarc"),
+			},
+			ParamConfigString: "Program : wine-staging\n" + "ProgramArgs : ",
+			ParamConfigFile: PathJoin(TestDir, "winelarc"),
+			ParamModifyTo: "Program : wine\n" + "ProgramArgs : ",
+		},
+	}
+
+	for _, testCase := range testTable {
+		t.Run(testCase.Description, func(t *testing.T) {
+			// write
+			var _ = ioutil.WriteFile(testCase.ParamConfigFile, []byte(testCase.ParamConfigString), os.FileMode(0755))
+
+			// first read
+			testCase.ParamRunner.RunnerReadConfig()
+
+			// test straight away if there is no value to modify to
+			// else do modification and read again then test
+			if testCase.ParamModifyTo == "" {
+				// test write read
+				if fmt.Sprint(testCase.ParamRunner) != fmt.Sprint(testCase.Expected) {
+					ErrorExpGot(t, testCase.Expected, testCase.ParamRunner, false)
+				}
+			} else {
+				// edit
+				var _ = ioutil.WriteFile(testCase.ParamConfigFile, []byte(testCase.ParamModifyTo), os.FileMode(0755))
+				// second read
+				testCase.ParamRunner.RunnerReadConfig()
+				// test modified read
+				if fmt.Sprint(testCase.ParamRunner) != fmt.Sprint(testCase.Expected) {
+					ErrorExpGot(t, testCase.Expected, testCase.ParamRunner, false)
+				}
+			}
+		})
+	}
+}
 
 func TestRunFromList(t *testing.T) {
 	os.MkdirAll(TestDir, 0755)
@@ -15,7 +90,7 @@ func TestRunFromList(t *testing.T) {
 		ExpectedErr  error
 		ParamRunner  Runner
 		ParamRunProg int
-		ParamFork  bool
+		ParamFork    bool
 	}{
 		// {
 		// 	Description: "fork launch first in list with wine and its params",
@@ -41,7 +116,7 @@ func TestRunFromList(t *testing.T) {
 				},
 			},
 			ParamRunProg: 5,
-			ParamFork: true,
+			ParamFork:    true,
 		},
 	}
 

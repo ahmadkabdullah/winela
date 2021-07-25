@@ -62,10 +62,10 @@ func EqualErrorList(t *testing.T, listA []error, listB []error) (equal bool) {
 }
 
 // print out an error with expected and gotten values
-func ErrorExpGot(t *testing.T, expected, gotten interface{}, err bool) {
+func ErrorExpGot(t *testing.T, expected, gotten interface{}, isErr bool) {
 	t.Helper()
 
-	if err {
+	if isErr {
 		t.Error("\nExpectedErr:", expected, "\nGottenErr:", gotten)
 	} else {
 		t.Error("\nExpected:", expected, "\nGotten:", gotten)
