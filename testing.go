@@ -14,12 +14,12 @@ type PairPathPerm struct {
 }
 
 // shortening of standard func
-func PathJoin(strA string, strB string) string {
+func pathJoin(strA string, strB string) string {
 	return filepath.Join(strA, strB)
 }
 
 // compare two exe slices and return true if they are the same
-func EqualExeList(t *testing.T, listA []exe, listB []exe) (equal bool) {
+func equalExeList(t *testing.T, listA []Exe, listB []Exe) (equal bool) {
 	t.Helper()
 
 	if len(listA) != len(listB) {
@@ -37,7 +37,7 @@ func EqualExeList(t *testing.T, listA []exe, listB []exe) (equal bool) {
 }
 
 // compare two lists of errors
-func EqualErrorList(t *testing.T, listA []error, listB []error) (equal bool) {
+func equalErrorList(t *testing.T, listA []error, listB []error) (equal bool) {
 	t.Helper()
 
 	if len(listA) != len(listB) {
@@ -62,7 +62,7 @@ func EqualErrorList(t *testing.T, listA []error, listB []error) (equal bool) {
 }
 
 // print out an error with expected and gotten values
-func ErrorExpGot(t *testing.T, expected, gotten interface{}, isErr bool) {
+func errorExpGot(t *testing.T, expected, gotten interface{}, isErr bool) {
 	t.Helper()
 
 	if isErr {

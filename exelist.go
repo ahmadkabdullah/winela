@@ -8,13 +8,13 @@ import (
 	"strings"
 )
 
-type exe struct {
+type Exe struct {
 	Name string
 	Path string
 }
 
 // read a file with a specific (exelist) format and get the list in it
-func ImportFromFile(fileName string) (retList []exe, retErr error) {
+func importFromFile(fileName string) (retList []Exe, retErr error) {
 	// read the file
 	data, retErr := ioutil.ReadFile(fileName)
 
@@ -38,7 +38,7 @@ func ImportFromFile(fileName string) (retList []exe, retErr error) {
 		}
 
 		// append the two parts each to a field in an exe struct
-		var tempExe = exe{
+		var tempExe = Exe{
 			Name: strings.TrimSpace(entryInTwo[0]),
 			Path: strings.TrimSpace(entryInTwo[1]),
 		}
@@ -54,7 +54,7 @@ func ImportFromFile(fileName string) (retList []exe, retErr error) {
 }
 
 // scan a directory and get a list of exe files in it (recursively)
-func ImportFromScan(dirName string) (retList []exe, retErr []error) {
+func importFromScan(dirName string) (retList []Exe, retErr []error) {
 	// read the dir
 	var dirEntryList, readErr = ioutil.ReadDir(dirName)
 
@@ -72,14 +72,14 @@ func ImportFromScan(dirName string) (retList []exe, retErr []error) {
 		// create vars for the entry
 		var (
 			dirEntryName         = dirEntry.Name()
-			dirEntryPath         = PathJoin(dirName, dirEntry.Name())
+			dirEntryPath         = pathJoin(dirName, dirEntry.Name())
 			dirEntryNameNoSuffix = strings.TrimSuffix(dirEntryName, ".exe")
 		)
 
 		// act depending on it being a dir or file
 		if dirEntry.IsDir() {
 			// recursive call to read dirs
-			var recurList, recurErr = ImportFromScan(dirEntryPath)
+			var recurList, recurErr = importFromScan(dirEntryPath)
 			// assign the recursive err to return one
 			retErr = recurErr
 			// add result to caller
@@ -104,7 +104,7 @@ func ImportFromScan(dirName string) (retList []exe, retErr []error) {
 
 			// then add to list
 			retList = append(retList,
-				exe{
+				Exe{
 					Name: dirEntryNameNoSuffix,
 					Path: dirEntryPath,
 				},
@@ -115,7 +115,7 @@ func ImportFromScan(dirName string) (retList []exe, retErr []error) {
 	return
 }
 
-func ExportToFile(fileName string, listToWrite []exe) (retErr error) {
+func exportToFile(fileName string, listToWrite []Exe) (retErr error) {
 	// read out the whole struct into a string
 	// with proper formatting
 	var dataAsString string

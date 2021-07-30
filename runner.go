@@ -12,7 +12,7 @@ import (
 type Runner struct {
 	Program     string
 	ProgramArgs string
-	List        []exe
+	List        []Exe
 
 	ConfigFile string
 	ListFile   string
@@ -21,17 +21,17 @@ type Runner struct {
 // see if there is a configuration stored in configuration dir
 // if not then create it by exporting default config and creating files
 // if yes then import the configuration and set it as running configuration
-func RunnerInitMake() (ret Runner) {
+func runnerInitMake() (ret Runner) {
 	// fix: deal with confdir error
 	var confDir, _ = os.UserConfigDir()
-	var progDir = PathJoin(confDir, "winela")
+	var progDir = pathJoin(confDir, "winela")
 
 	// set defaults
 	ret.Program = "wine"
 	ret.ProgramArgs = ""
-	ret.List = []exe{}
-	ret.ConfigFile = PathJoin(progDir, "winelarc")
-	ret.ListFile = PathJoin(progDir, "wineladb")
+	ret.List = []Exe{}
+	ret.ConfigFile = pathJoin(progDir, "winelarc")
+	ret.ListFile = pathJoin(progDir, "wineladb")
 
 	// try import and go from there
 
@@ -51,7 +51,7 @@ func RunnerInitMake() (ret Runner) {
 	case true:
 		ret.RunnerWriteConfig()
 	case false:
-		ret.RunnerReadConfig()
+		ret.runnerReadConfig()
 	}
 
 	// read list file
@@ -62,7 +62,7 @@ func RunnerInitMake() (ret Runner) {
 		ioutil.WriteFile(ret.ListFile, []byte{}, os.FileMode(0755))
 	case false:
 		// if it exists then import the list from it
-		var importedList, importErr = ImportFromFile(ret.ListFile)
+		var importedList, importErr = importFromFile(ret.ListFile)
 		// and if no errors occurred set it to returning list
 		if importErr == nil {
 			ret.List = importedList
@@ -74,7 +74,7 @@ func RunnerInitMake() (ret Runner) {
 
 // read the configuration from previously saved file
 // into the current runner (startup, init)
-func (r *Runner) RunnerReadConfig() {
+func (r *Runner) runnerReadConfig() {
 	var readData, _ = ioutil.ReadFile(r.ConfigFile)
 	var strData = string(readData)
 	var lines = strings.Split(strData, "\n")
@@ -121,9 +121,9 @@ func (r *Runner) RunnerWriteConfig() {
 
 // run specified exe from the list of exes
 // choosing whether to fork the process or not
-func (r Runner) RunFromList(elementNumber int, shouldFork bool) error {
+func (r Runner) runFromList(elementNumber int, shouldFork bool) error {
 	// vars for storing target exe and its found stat
-	var targetExe exe
+	var targetExe Exe
 	var foundTarget bool
 
 	// see if target exe is in the list
@@ -191,7 +191,7 @@ func (r Runner) RunFromList(elementNumber int, shouldFork bool) error {
 }
 
 // return the list as a numbered string
-func (r Runner) DisplayList() (ret string) {
+func (r Runner) displayList() (ret string) {
 	for index, entry := range r.List {
 		ret += fmt.Sprintf("%v %v\n", index+1, entry.Name)
 	}

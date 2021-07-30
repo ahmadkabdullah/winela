@@ -24,15 +24,15 @@ func TestRunnerReadConfig(t *testing.T) {
 			Expected: Runner{
 				Program:     "wine-staging",
 				ProgramArgs: "",
-				List:        []exe{},
-				ConfigFile:  PathJoin(TestDir, "winelarc"),
+				List:        []Exe{},
+				ConfigFile:  pathJoin(TestDir, "winelarc"),
 			},
 			ParamRunner: Runner{
-				ConfigFile: PathJoin(TestDir, "winelarc"),
+				ConfigFile: pathJoin(TestDir, "winelarc"),
 			},
 			ParamConfigString: "Program : wine-staging\n" +
 				"ProgramArgs : ",
-			ParamConfigFile: PathJoin(TestDir, "winelarc"),
+			ParamConfigFile: pathJoin(TestDir, "winelarc"),
 			ParamModifyTo:   "",
 		},
 		{
@@ -40,14 +40,14 @@ func TestRunnerReadConfig(t *testing.T) {
 			Expected: Runner{
 				Program:     "wine",
 				ProgramArgs: "",
-				List:        []exe{},
-				ConfigFile:  PathJoin(TestDir, "winelarc"),
+				List:        []Exe{},
+				ConfigFile:  pathJoin(TestDir, "winelarc"),
 			},
 			ParamRunner: Runner{
-				ConfigFile: PathJoin(TestDir, "winelarc"),
+				ConfigFile: pathJoin(TestDir, "winelarc"),
 			},
 			ParamConfigString: "Program : wine-staging\n" + "ProgramArgs : ",
-			ParamConfigFile:   PathJoin(TestDir, "winelarc"),
+			ParamConfigFile:   pathJoin(TestDir, "winelarc"),
 			ParamModifyTo:     "Program : wine\n" + "ProgramArgs : ",
 		},
 	}
@@ -58,23 +58,23 @@ func TestRunnerReadConfig(t *testing.T) {
 			var _ = ioutil.WriteFile(testCase.ParamConfigFile, []byte(testCase.ParamConfigString), os.FileMode(0755))
 
 			// first read
-			testCase.ParamRunner.RunnerReadConfig()
+			testCase.ParamRunner.runnerReadConfig()
 
 			// test straight away if there is no value to modify to
 			// else do modification and read again then test
 			if testCase.ParamModifyTo == "" {
 				// test write read
 				if fmt.Sprint(testCase.ParamRunner) != fmt.Sprint(testCase.Expected) {
-					ErrorExpGot(t, testCase.Expected, testCase.ParamRunner, false)
+					errorExpGot(t, testCase.Expected, testCase.ParamRunner, false)
 				}
 			} else {
 				// edit
 				var _ = ioutil.WriteFile(testCase.ParamConfigFile, []byte(testCase.ParamModifyTo), os.FileMode(0755))
 				// second read
-				testCase.ParamRunner.RunnerReadConfig()
+				testCase.ParamRunner.runnerReadConfig()
 				// test modified read
 				if fmt.Sprint(testCase.ParamRunner) != fmt.Sprint(testCase.Expected) {
-					ErrorExpGot(t, testCase.Expected, testCase.ParamRunner, false)
+					errorExpGot(t, testCase.Expected, testCase.ParamRunner, false)
 				}
 			}
 		})
@@ -111,8 +111,8 @@ func TestRunFromList(t *testing.T) {
 			ParamRunner: Runner{
 				Program:     "wine",
 				ProgramArgs: "",
-				List: []exe{
-					{"PS", PathJoin(TestDir, "PS.exe")},
+				List: []Exe{
+					{"PS", pathJoin(TestDir, "PS.exe")},
 				},
 			},
 			ParamRunProg: 5,
@@ -129,10 +129,10 @@ func TestRunFromList(t *testing.T) {
 			// // remove later
 			// defer os.Remove(testCase.ParamRunner.List[0].Path)
 
-			var gottenErr = testCase.ParamRunner.RunFromList(testCase.ParamRunProg, testCase.ParamFork)
+			var gottenErr = testCase.ParamRunner.runFromList(testCase.ParamRunProg, testCase.ParamFork)
 
-			if EqualErrorList(t, []error{testCase.ExpectedErr}, []error{gottenErr}) == false {
-				ErrorExpGot(t, testCase.ExpectedErr, gottenErr, true)
+			if equalErrorList(t, []error{testCase.ExpectedErr}, []error{gottenErr}) == false {
+				errorExpGot(t, testCase.ExpectedErr, gottenErr, true)
 			}
 		})
 	}
@@ -150,9 +150,9 @@ func TestDisplayList(t *testing.T) {
 			ParamRunner: Runner{
 				Program:     "wine",
 				ProgramArgs: "",
-				List: []exe{
-					{"sr", PathJoin(TestDir, "sr.exe")},
-					{"lon", PathJoin(TestDir, "lon.exe")},
+				List: []Exe{
+					{"sr", pathJoin(TestDir, "sr.exe")},
+					{"lon", pathJoin(TestDir, "lon.exe")},
 				},
 			},
 		},
@@ -160,10 +160,10 @@ func TestDisplayList(t *testing.T) {
 
 	for _, testCase := range testTable {
 		t.Run(testCase.Description, func(t *testing.T) {
-			var gotten = testCase.ParamRunner.DisplayList()
+			var gotten = testCase.ParamRunner.displayList()
 
 			if testCase.Expected != gotten {
-				ErrorExpGot(t, testCase.Expected, gotten, false)
+				errorExpGot(t, testCase.Expected, gotten, false)
 			}
 		})
 	}

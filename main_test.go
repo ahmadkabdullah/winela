@@ -1,8 +1,15 @@
 package main
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
 
 func TestLaunch(t *testing.T) {
+	// make testing directory
+	os.MkdirAll(TestDir, 0755)
+	defer os.RemoveAll(TestDir)
+
 	var testTable = []struct {
 		Description string
 		Expected    int
@@ -15,37 +22,54 @@ func TestLaunch(t *testing.T) {
 			Expected:    0,
 
 			ParamArguments: []string{"-l"},
-			ParamRunner:    Runner{},
+			ParamRunner: Runner{
+				ListFile: pathJoin(TestDir, "wineladb"),
+			},
 		},
 		{
 			Description: "run option with no arguments",
 			Expected:    1,
 
 			ParamArguments: []string{"-r"},
-			ParamRunner:    Runner{},
+			ParamRunner: Runner{
+				ListFile: pathJoin(TestDir, "wineladb"),
+			},
 		},
 		{
 			Description: "run option with a letter",
 			Expected:    2,
 
 			ParamArguments: []string{"-r", "a"},
-			ParamRunner:    Runner{},
+			ParamRunner: Runner{
+				ListFile: pathJoin(TestDir, "wineladb"),
+			},
 		},
 		{
 			Description: "scan option with wrong dir",
 			Expected:    3,
 
 			ParamArguments: []string{"-s", "/ii"},
-			ParamRunner:    Runner{},
+			ParamRunner: Runner{
+				ListFile: pathJoin(TestDir, "wineladb"),
+			},
+		},
+		{
+			Description: "scan option no directory given",
+			Expected:    0,
+
+			ParamArguments: []string{"-s"},
+			ParamRunner: Runner{
+				ListFile: pathJoin(TestDir, "wineladb"),
+			},
 		},
 	}
 
 	for _, testCase := range testTable {
 		t.Run(testCase.Description, func(t *testing.T) {
-			var gotten = Launch(testCase.ParamRunner, testCase.ParamArguments)
+			var gotten = launch(testCase.ParamRunner, testCase.ParamArguments)
 
 			if testCase.Expected != gotten {
-				ErrorExpGot(t, testCase.Expected, gotten, false)
+				errorExpGot(t, testCase.Expected, gotten, false)
 			}
 		})
 	}

@@ -10,8 +10,8 @@ func main() {
 	// only launch if given an argument
 	if len(os.Args) > 1 {
 		// let function handle import/export of runner
-		var r = RunnerInitMake()
-		var returnedCode = Launch(r, os.Args[1:])
+		var r = runnerInitMake()
+		var returnedCode = launch(r, os.Args[1:])
 		os.Exit(returnedCode)
 	}
 
@@ -24,7 +24,7 @@ func main() {
 
 // central function for usage of functions
 // and handling of arguments
-func Launch(rnr Runner, args []string) int {
+func launch(rnr Runner, args []string) int {
 	switch args[0] {
 	case "-r", "-R":
 		// alert if no number given
@@ -44,7 +44,7 @@ func Launch(rnr Runner, args []string) int {
 		switch args[0] {
 		// if "r" then fork
 		case "-r":
-			var runErr = rnr.RunFromList(convertedInt, true)
+			var runErr = rnr.runFromList(convertedInt, true)
 			if runErr != nil {
 				fmt.Printf("run error: %s\n", runErr.Error())
 				return 3
@@ -53,7 +53,7 @@ func Launch(rnr Runner, args []string) int {
 		// if "R" then don't fork
 		case "-R":
 			fmt.Printf("stat: number %v will be run\n", convertedInt)
-			var runErr = rnr.RunFromList(convertedInt, false)
+			var runErr = rnr.runFromList(convertedInt, false)
 			if runErr != nil {
 				fmt.Printf("run error: %s\n", runErr.Error())
 				return 3
@@ -81,7 +81,7 @@ func Launch(rnr Runner, args []string) int {
 		}
 
 		// do the scan
-		var list, scanErr = ImportFromScan(dirToScan)
+		var list, scanErr = importFromScan(dirToScan)
 		// output all errors if they exist
 		if scanErr != nil {
 			for _, e := range scanErr {
@@ -93,7 +93,7 @@ func Launch(rnr Runner, args []string) int {
 		fmt.Printf("stat: dir %s was scanned\n", dirToScan)
 
 		// export the scanned dir to wineladb
-		var exportErr = ExportToFile(rnr.ListFile, list)
+		var exportErr = exportToFile(rnr.ListFile, list)
 		if exportErr != nil {
 			fmt.Printf("exporting scanned list error: %s\n", exportErr.Error())
 			return 1
@@ -103,7 +103,7 @@ func Launch(rnr Runner, args []string) int {
 
 	case "-l":
 		// print every exe in list
-		var toDisplay = rnr.DisplayList()
+		var toDisplay = rnr.displayList()
 		fmt.Print(toDisplay)
 
 		fmt.Printf("stat: list printed\n")

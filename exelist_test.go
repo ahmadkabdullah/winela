@@ -17,7 +17,7 @@ func TestExportImport(t *testing.T) {
 
 	var testTable = []struct {
 		Description  string
-		Expected     []exe
+		Expected     []Exe
 		ExpectedErrs []error
 
 		ParamSearchDir string
@@ -27,23 +27,23 @@ func TestExportImport(t *testing.T) {
 	}{
 		{
 			Description: "scan a dir and export result to a file then import back from exported file",
-			Expected: []exe{
-				{"flap", PathJoin(TestDir, "games/flap.exe")},
-				{"paint", PathJoin(TestDir, "ms/paint.exe")},
-				{"pt", PathJoin(TestDir, "pt.exe")},
+			Expected: []Exe{
+				{"flap", pathJoin(TestDir, "games/flap.exe")},
+				{"paint", pathJoin(TestDir, "ms/paint.exe")},
+				{"pt", pathJoin(TestDir, "pt.exe")},
 			},
 			ExpectedErrs: []error{},
 
 			ParamSearchDir: TestDir,
-			ParamWriteFile: PathJoin(TestDir, "expoFile"),
+			ParamWriteFile: pathJoin(TestDir, "expoFile"),
 			ParamDirs: []PairPathPerm{
-				{PathJoin(TestDir, "ms"), 0755},
-				{PathJoin(TestDir, "games"), 0755},
+				{pathJoin(TestDir, "ms"), 0755},
+				{pathJoin(TestDir, "games"), 0755},
 			},
 			ParamFiles: []PairPathPerm{
-				{PathJoin(TestDir, "ms/paint.exe"), 0755},
-				{PathJoin(TestDir, "games/flap.exe"), 0755},
-				{PathJoin(TestDir, "pt.exe"), 0755},
+				{pathJoin(TestDir, "ms/paint.exe"), 0755},
+				{pathJoin(TestDir, "games/flap.exe"), 0755},
+				{pathJoin(TestDir, "pt.exe"), 0755},
 			},
 		},
 	}
@@ -66,20 +66,20 @@ func TestExportImport(t *testing.T) {
 			var gottenErrs []error
 
 			// step 1 run a scan
-			var listFromScan, scanErrs = ImportFromScan(testCase.ParamSearchDir)
+			var listFromScan, scanErrs = importFromScan(testCase.ParamSearchDir)
 			if scanErrs != nil {
 				gottenErrs = append(gottenErrs, scanErrs...)
 			}
 
 			// step 2 export into a file
-			var writeErr = ExportToFile(testCase.ParamWriteFile, listFromScan)
+			var writeErr = exportToFile(testCase.ParamWriteFile, listFromScan)
 			defer os.RemoveAll(testCase.ParamWriteFile)
 			if writeErr != nil {
 				gottenErrs = append(gottenErrs, writeErr)
 			}
 
 			// step 3 read from file
-			var listFromFile, readErr = ImportFromFile(testCase.ParamWriteFile)
+			var listFromFile, readErr = importFromFile(testCase.ParamWriteFile)
 			if readErr != nil {
 				gottenErrs = append(gottenErrs, readErr)
 			}
@@ -89,12 +89,12 @@ func TestExportImport(t *testing.T) {
 
 			// test
 
-			if EqualExeList(t, testCase.Expected, gotten) == false {
-				ErrorExpGot(t, testCase.Expected, gotten, false)
+			if equalExeList(t, testCase.Expected, gotten) == false {
+				errorExpGot(t, testCase.Expected, gotten, false)
 			}
 
-			if EqualErrorList(t, testCase.ExpectedErrs, gottenErrs) == false {
-				ErrorExpGot(t, testCase.ExpectedErrs, gottenErrs, true)
+			if equalErrorList(t, testCase.ExpectedErrs, gottenErrs) == false {
+				errorExpGot(t, testCase.ExpectedErrs, gottenErrs, true)
 			}
 		})
 	}
@@ -108,11 +108,11 @@ func TestImportFromFile(t *testing.T) {
 	defer os.RemoveAll(TestDir)
 
 	// file name for all cases
-	var testFileName = PathJoin(TestDir, "testFile")
+	var testFileName = pathJoin(TestDir, "testFile")
 
 	var testTable = []struct {
 		Description string
-		Expected    []exe
+		Expected    []Exe
 		ExpectedErr error
 
 		ParamContent string
@@ -120,7 +120,7 @@ func TestImportFromFile(t *testing.T) {
 	}{
 		{
 			Description: "import regular file",
-			Expected:    []exe{{"okay", "~/Downloads/okay.exe"}},
+			Expected:    []Exe{{"okay", "~/Downloads/okay.exe"}},
 			ExpectedErr: nil,
 
 			ParamContent: "okay => ~/Downloads/okay.exe\n",
@@ -128,7 +128,7 @@ func TestImportFromFile(t *testing.T) {
 		},
 		{
 			Description: "file can't be read",
-			Expected:    []exe{},
+			Expected:    []Exe{},
 			ExpectedErr: fmt.Errorf("open %s: permission denied", testFileName),
 
 			ParamContent: "okay => ~/Downloads/okay.exe\n" + "yes=> ~/go/bin/yes.exe\n",
@@ -136,7 +136,7 @@ func TestImportFromFile(t *testing.T) {
 		},
 		{
 			Description: "multiple separators in one line in file",
-			Expected: []exe{
+			Expected: []Exe{
 				{"okay", "~/Downloads/okay.exe"},
 				{"yes", "~/go/bin/yes.exe"},
 			},
@@ -162,16 +162,16 @@ func TestImportFromFile(t *testing.T) {
 			defer os.Remove(testFileName)
 
 			// run function
-			var gotten, gottenErr = ImportFromFile(testFileName)
+			var gotten, gottenErr = importFromFile(testFileName)
 
 			// test data
-			if EqualExeList(t, testCase.Expected, gotten) == false {
-				ErrorExpGot(t, testCase.Expected, gotten, false)
+			if equalExeList(t, testCase.Expected, gotten) == false {
+				errorExpGot(t, testCase.Expected, gotten, false)
 			}
 
 			// test error
-			if EqualErrorList(t, []error{testCase.ExpectedErr}, []error{gottenErr}) == false {
-				ErrorExpGot(t, testCase.ExpectedErr, gottenErr, true)
+			if equalErrorList(t, []error{testCase.ExpectedErr}, []error{gottenErr}) == false {
+				errorExpGot(t, testCase.ExpectedErr, gottenErr, true)
 			}
 		})
 	}
@@ -184,7 +184,7 @@ func TestImportFromScan(t *testing.T) {
 
 	var testTable = []struct {
 		Description  string
-		Expected     []exe
+		Expected     []Exe
 		ExpectedErrs []error
 
 		ParamSearch string
@@ -193,97 +193,97 @@ func TestImportFromScan(t *testing.T) {
 	}{
 		{
 			Description: "scanning a regular dir",
-			Expected: []exe{
-				{Name: "second", Path: PathJoin(TestDir, "extra/second.exe")},
-				{Name: "first", Path: PathJoin(TestDir, "first.exe")},
-				{Name: "third", Path: PathJoin(TestDir, "third.exe")},
+			Expected: []Exe{
+				{Name: "second", Path: pathJoin(TestDir, "extra/second.exe")},
+				{Name: "first", Path: pathJoin(TestDir, "first.exe")},
+				{Name: "third", Path: pathJoin(TestDir, "third.exe")},
 			},
 			ExpectedErrs: []error{},
 
 			ParamSearch: TestDir,
 			ParamDirs: []PairPathPerm{
-				{PathJoin(TestDir, "extra"), 0755},
+				{pathJoin(TestDir, "extra"), 0755},
 			},
 			ParamFiles: []PairPathPerm{
-				{PathJoin(TestDir, "first.exe"), 0755},
-				{PathJoin(TestDir, "extra/second.exe"), 0755},
-				{PathJoin(TestDir, "third.exe"), 0755},
+				{pathJoin(TestDir, "first.exe"), 0755},
+				{pathJoin(TestDir, "extra/second.exe"), 0755},
+				{pathJoin(TestDir, "third.exe"), 0755},
 			},
 		},
 		{
 			Description: "dir not accessible",
-			Expected: []exe{
-				{Name: "first", Path: PathJoin(TestDir, "first.exe")},
-				{Name: "third", Path: PathJoin(TestDir, "third.exe")},
+			Expected: []Exe{
+				{Name: "first", Path: pathJoin(TestDir, "first.exe")},
+				{Name: "third", Path: pathJoin(TestDir, "third.exe")},
 			},
 			ExpectedErrs: []error{
 				// clunky
-				fmt.Errorf("open %s: permission denied", PathJoin(TestDir, "extra")),
+				fmt.Errorf("open %s: permission denied", pathJoin(TestDir, "extra")),
 			},
 
 			ParamSearch: TestDir,
 			ParamDirs: []PairPathPerm{
-				{PathJoin(TestDir, "extra"), 0111},
+				{pathJoin(TestDir, "extra"), 0111},
 			},
 			ParamFiles: []PairPathPerm{
-				{PathJoin(TestDir, "first.exe"), 0755},
-				{PathJoin(TestDir, "extra/second.exe"), 0755},
-				{PathJoin(TestDir, "third.exe"), 0755},
+				{pathJoin(TestDir, "first.exe"), 0755},
+				{pathJoin(TestDir, "extra/second.exe"), 0755},
+				{pathJoin(TestDir, "third.exe"), 0755},
 			},
 		},
 		{
 			Description: "file not accessible",
-			Expected: []exe{
-				{Name: "third", Path: PathJoin(TestDir, "third.exe")},
+			Expected: []Exe{
+				{Name: "third", Path: pathJoin(TestDir, "third.exe")},
 			},
 			ExpectedErrs: []error{
 				// clunky
-				fmt.Errorf("open %s: permission denied", PathJoin(TestDir, "first.exe")),
+				fmt.Errorf("open %s: permission denied", pathJoin(TestDir, "first.exe")),
 			},
 
 			ParamSearch: TestDir,
 			ParamDirs:   []PairPathPerm{},
 			ParamFiles: []PairPathPerm{
-				{PathJoin(TestDir, "first.exe"), 0222},
-				{PathJoin(TestDir, "third.exe"), 0755},
+				{pathJoin(TestDir, "first.exe"), 0222},
+				{pathJoin(TestDir, "third.exe"), 0755},
 			},
 		},
 		{
 			Description: "nested file not accessible",
-			Expected: []exe{
-				{Name: "first", Path: PathJoin(TestDir, "first.exe")},
-				{Name: "third", Path: PathJoin(TestDir, "third.exe")},
+			Expected: []Exe{
+				{Name: "first", Path: pathJoin(TestDir, "first.exe")},
+				{Name: "third", Path: pathJoin(TestDir, "third.exe")},
 			},
 			ExpectedErrs: []error{
 				// clunky
-				fmt.Errorf("open %s: permission denied", PathJoin(TestDir, "extra/second.exe")),
+				fmt.Errorf("open %s: permission denied", pathJoin(TestDir, "extra/second.exe")),
 			},
 
 			ParamSearch: TestDir,
 			ParamDirs: []PairPathPerm{
-				{PathJoin(TestDir, "extra"), 0755},
+				{pathJoin(TestDir, "extra"), 0755},
 			},
 			ParamFiles: []PairPathPerm{
-				{PathJoin(TestDir, "first.exe"), 0755},
-				{PathJoin(TestDir, "extra/second.exe"), 0122},
-				{PathJoin(TestDir, "third.exe"), 0755},
+				{pathJoin(TestDir, "first.exe"), 0755},
+				{pathJoin(TestDir, "extra/second.exe"), 0122},
+				{pathJoin(TestDir, "third.exe"), 0755},
 			},
 		},
 		{
 			Description: "different and wrong extensions",
-			Expected: []exe{
-				{Name: "alpha", Path: PathJoin(TestDir, "alpha.exe")},
+			Expected: []Exe{
+				{Name: "alpha", Path: pathJoin(TestDir, "alpha.exe")},
 			},
 			ExpectedErrs: []error{},
 
 			ParamSearch: TestDir,
 			ParamDirs: []PairPathPerm{
-				{PathJoin(TestDir, "ost"), 0755},
+				{pathJoin(TestDir, "ost"), 0755},
 			},
 			ParamFiles: []PairPathPerm{
-				{PathJoin(TestDir, "alpha.exe"), 0755},
-				{PathJoin(TestDir, "beta.xe"), 0755},
-				{PathJoin(TestDir, "ost/zetta.mp3"), 0755},
+				{pathJoin(TestDir, "alpha.exe"), 0755},
+				{pathJoin(TestDir, "beta.xe"), 0755},
+				{pathJoin(TestDir, "ost/zetta.mp3"), 0755},
 			},
 		},
 	}
@@ -313,16 +313,16 @@ func TestImportFromScan(t *testing.T) {
 			}
 
 			// run
-			var gotten, gottenErrs = ImportFromScan(testCase.ParamSearch)
+			var gotten, gottenErrs = importFromScan(testCase.ParamSearch)
 
 			// test
 
-			if EqualExeList(t, testCase.Expected, gotten) == false {
-				ErrorExpGot(t, testCase.Expected, gotten, false)
+			if equalExeList(t, testCase.Expected, gotten) == false {
+				errorExpGot(t, testCase.Expected, gotten, false)
 			}
 
-			if EqualErrorList(t, testCase.ExpectedErrs, gottenErrs) == false {
-				ErrorExpGot(t, testCase.ExpectedErrs, gottenErrs, true)
+			if equalErrorList(t, testCase.ExpectedErrs, gottenErrs) == false {
+				errorExpGot(t, testCase.ExpectedErrs, gottenErrs, true)
 			}
 		})
 	}
@@ -339,7 +339,7 @@ func TestExportToFile(t *testing.T) {
 		ExpectedErr error
 
 		ParamFile PairPathPerm
-		ParamList []exe
+		ParamList []Exe
 	}{
 		{
 			Description: "exporting a regular file",
@@ -347,10 +347,10 @@ func TestExportToFile(t *testing.T) {
 			ExpectedErr: nil,
 
 			ParamFile: PairPathPerm{
-				Path: PathJoin(TestDir, "exportedFile"),
+				Path: pathJoin(TestDir, "exportedFile"),
 				Perm: 0755,
 			},
-			ParamList: []exe{
+			ParamList: []Exe{
 				{"ck", "~/Games/ck/ck.exe"},
 				{"fff", "~/Downloads/fff.exe"},
 			},
@@ -361,10 +361,10 @@ func TestExportToFile(t *testing.T) {
 			ExpectedErr: fmt.Errorf("open /root/exportedFile: permission denied"),
 
 			ParamFile: PairPathPerm{
-				Path: PathJoin("/root", "exportedFile"),
+				Path: pathJoin("/root", "exportedFile"),
 				Perm: 0755,
 			},
-			ParamList: []exe{
+			ParamList: []Exe{
 				{"ck", "~/Games/ck/ck.exe"},
 				{"fff", "~/Downloads/fff.exe"},
 			},
@@ -374,7 +374,7 @@ func TestExportToFile(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.Description, func(t *testing.T) {
 			// run func
-			var gottenErr = ExportToFile(
+			var gottenErr = exportToFile(
 				testCase.ParamFile.Path,
 				testCase.ParamList,
 			)
@@ -389,11 +389,11 @@ func TestExportToFile(t *testing.T) {
 			// test
 
 			if testCase.Expected != gotten {
-				ErrorExpGot(t, testCase.Expected, gotten, false)
+				errorExpGot(t, testCase.Expected, gotten, false)
 			}
 
-			if EqualErrorList(t, []error{testCase.ExpectedErr}, []error{gottenErr}) == false {
-				ErrorExpGot(t, testCase.ExpectedErr, gottenErr, true)
+			if equalErrorList(t, []error{testCase.ExpectedErr}, []error{gottenErr}) == false {
+				errorExpGot(t, testCase.ExpectedErr, gottenErr, true)
 			}
 		})
 	}
