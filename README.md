@@ -1,6 +1,7 @@
-[![build](https://github.com/ahmadkabdullah/winela/actions/workflows/build-test.yml/badge.svg?branch=main)](https://github.com/ahmadkabdullah/winela/actions/workflows/build-test.yml)
+![report](https://goreportcard.com/badge/github.com/ahmadkabdullah/winela)
 ![release](https://img.shields.io/github/v/release/ahmadkabdullah/winela?include_prereleases&label=Release)
 ![license](https://img.shields.io/github/license/ahmadkabdullah/winela?label=License&style=flat&color=yellow)
+
 
 Winela is a commandline launcher for executables through winehq. It is meant to help with finding and executing exe files without installing bloated programs that typically limit you to installing from things.
 
