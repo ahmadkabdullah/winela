@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// the dir to make for tests
 const TestDir = "testground"
 
 // path of file to create and its permission
@@ -13,9 +14,9 @@ type PairPathPerm struct {
 	Perm int
 }
 
-// shortening of standard func
-func pathJoin(strA string, strB string) string {
-	return filepath.Join(strA, strB)
+// prefix a path with test directory path
+func inTestDir(path string) string {
+	return filepath.Join(TestDir, path)
 }
 
 // compare two exe slices and return true if they are the same

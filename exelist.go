@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 )
@@ -72,7 +73,7 @@ func importFromScan(dirName string) (retList []Exe, retErr []error) {
 		// create vars for the entry
 		var (
 			dirEntryName         = dirEntry.Name()
-			dirEntryPath         = pathJoin(dirName, dirEntry.Name())
+			dirEntryPath         = path.Join(dirName, dirEntry.Name())
 			dirEntryNameNoSuffix = strings.TrimSuffix(dirEntryName, ".exe")
 		)
 

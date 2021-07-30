@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"path"
 	"strings"
 )
 
@@ -24,14 +25,14 @@ type Runner struct {
 func runnerInitMake() (ret Runner) {
 	// fix: deal with confdir error
 	var confDir, _ = os.UserConfigDir()
-	var progDir = pathJoin(confDir, "winela")
+	var progDir = path.Join(confDir, "winela")
 
 	// set defaults
 	ret.Program = "wine"
 	ret.ProgramArgs = ""
 	ret.List = []Exe{}
-	ret.ConfigFile = pathJoin(progDir, "winelarc")
-	ret.ListFile = pathJoin(progDir, "wineladb")
+	ret.ConfigFile = path.Join(progDir, "winelarc")
+	ret.ListFile = path.Join(progDir, "wineladb")
 
 	// try import and go from there
 

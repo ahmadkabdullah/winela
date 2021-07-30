@@ -25,14 +25,14 @@ func TestRunnerReadConfig(t *testing.T) {
 				Program:     "wine-staging",
 				ProgramArgs: "",
 				List:        []Exe{},
-				ConfigFile:  pathJoin(TestDir, "winelarc"),
+				ConfigFile:  inTestDir("winelarc"),
 			},
 			ParamRunner: Runner{
-				ConfigFile: pathJoin(TestDir, "winelarc"),
+				ConfigFile: inTestDir("winelarc"),
 			},
 			ParamConfigString: "Program : wine-staging\n" +
 				"ProgramArgs : ",
-			ParamConfigFile: pathJoin(TestDir, "winelarc"),
+			ParamConfigFile: inTestDir("winelarc"),
 			ParamModifyTo:   "",
 		},
 		{
@@ -41,13 +41,13 @@ func TestRunnerReadConfig(t *testing.T) {
 				Program:     "wine",
 				ProgramArgs: "",
 				List:        []Exe{},
-				ConfigFile:  pathJoin(TestDir, "winelarc"),
+				ConfigFile:  inTestDir("winelarc"),
 			},
 			ParamRunner: Runner{
-				ConfigFile: pathJoin(TestDir, "winelarc"),
+				ConfigFile: inTestDir("winelarc"),
 			},
 			ParamConfigString: "Program : wine-staging\n" + "ProgramArgs : ",
-			ParamConfigFile:   pathJoin(TestDir, "winelarc"),
+			ParamConfigFile:   inTestDir("winelarc"),
 			ParamModifyTo:     "Program : wine\n" + "ProgramArgs : ",
 		},
 	}
@@ -112,7 +112,7 @@ func TestRunFromList(t *testing.T) {
 				Program:     "wine",
 				ProgramArgs: "",
 				List: []Exe{
-					{"PS", pathJoin(TestDir, "PS.exe")},
+					{"PS", inTestDir("PS.exe")},
 				},
 			},
 			ParamRunProg: 5,
@@ -151,8 +151,8 @@ func TestDisplayList(t *testing.T) {
 				Program:     "wine",
 				ProgramArgs: "",
 				List: []Exe{
-					{"sr", pathJoin(TestDir, "sr.exe")},
-					{"lon", pathJoin(TestDir, "lon.exe")},
+					{"sr", inTestDir("sr.exe")},
+					{"lon", inTestDir("lon.exe")},
 				},
 			},
 		},

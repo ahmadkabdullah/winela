@@ -28,22 +28,22 @@ func TestExportImport(t *testing.T) {
 		{
 			Description: "scan a dir and export result to a file then import back from exported file",
 			Expected: []Exe{
-				{"flap", pathJoin(TestDir, "games/flap.exe")},
-				{"paint", pathJoin(TestDir, "ms/paint.exe")},
-				{"pt", pathJoin(TestDir, "pt.exe")},
+				{"flap", inTestDir("games/flap.exe")},
+				{"paint", inTestDir("ms/paint.exe")},
+				{"pt", inTestDir("pt.exe")},
 			},
 			ExpectedErrs: []error{},
 
 			ParamSearchDir: TestDir,
-			ParamWriteFile: pathJoin(TestDir, "expoFile"),
+			ParamWriteFile: inTestDir("expoFile"),
 			ParamDirs: []PairPathPerm{
-				{pathJoin(TestDir, "ms"), 0755},
-				{pathJoin(TestDir, "games"), 0755},
+				{inTestDir("ms"), 0755},
+				{inTestDir("games"), 0755},
 			},
 			ParamFiles: []PairPathPerm{
-				{pathJoin(TestDir, "ms/paint.exe"), 0755},
-				{pathJoin(TestDir, "games/flap.exe"), 0755},
-				{pathJoin(TestDir, "pt.exe"), 0755},
+				{inTestDir("ms/paint.exe"), 0755},
+				{inTestDir("games/flap.exe"), 0755},
+				{inTestDir("pt.exe"), 0755},
 			},
 		},
 	}
@@ -108,7 +108,7 @@ func TestImportFromFile(t *testing.T) {
 	defer os.RemoveAll(TestDir)
 
 	// file name for all cases
-	var testFileName = pathJoin(TestDir, "testFile")
+	var testFileName = inTestDir("testFile")
 
 	var testTable = []struct {
 		Description string
@@ -194,96 +194,96 @@ func TestImportFromScan(t *testing.T) {
 		{
 			Description: "scanning a regular dir",
 			Expected: []Exe{
-				{Name: "second", Path: pathJoin(TestDir, "extra/second.exe")},
-				{Name: "first", Path: pathJoin(TestDir, "first.exe")},
-				{Name: "third", Path: pathJoin(TestDir, "third.exe")},
+				{Name: "second", Path: inTestDir("extra/second.exe")},
+				{Name: "first", Path: inTestDir("first.exe")},
+				{Name: "third", Path: inTestDir("third.exe")},
 			},
 			ExpectedErrs: []error{},
 
 			ParamSearch: TestDir,
 			ParamDirs: []PairPathPerm{
-				{pathJoin(TestDir, "extra"), 0755},
+				{inTestDir("extra"), 0755},
 			},
 			ParamFiles: []PairPathPerm{
-				{pathJoin(TestDir, "first.exe"), 0755},
-				{pathJoin(TestDir, "extra/second.exe"), 0755},
-				{pathJoin(TestDir, "third.exe"), 0755},
+				{inTestDir("first.exe"), 0755},
+				{inTestDir("extra/second.exe"), 0755},
+				{inTestDir("third.exe"), 0755},
 			},
 		},
 		{
 			Description: "dir not accessible",
 			Expected: []Exe{
-				{Name: "first", Path: pathJoin(TestDir, "first.exe")},
-				{Name: "third", Path: pathJoin(TestDir, "third.exe")},
+				{Name: "first", Path: inTestDir("first.exe")},
+				{Name: "third", Path: inTestDir("third.exe")},
 			},
 			ExpectedErrs: []error{
 				// clunky
-				fmt.Errorf("open %s: permission denied", pathJoin(TestDir, "extra")),
+				fmt.Errorf("open %s: permission denied", inTestDir("extra")),
 			},
 
 			ParamSearch: TestDir,
 			ParamDirs: []PairPathPerm{
-				{pathJoin(TestDir, "extra"), 0111},
+				{inTestDir("extra"), 0111},
 			},
 			ParamFiles: []PairPathPerm{
-				{pathJoin(TestDir, "first.exe"), 0755},
-				{pathJoin(TestDir, "extra/second.exe"), 0755},
-				{pathJoin(TestDir, "third.exe"), 0755},
+				{inTestDir("first.exe"), 0755},
+				{inTestDir("extra/second.exe"), 0755},
+				{inTestDir("third.exe"), 0755},
 			},
 		},
 		{
 			Description: "file not accessible",
 			Expected: []Exe{
-				{Name: "third", Path: pathJoin(TestDir, "third.exe")},
+				{Name: "third", Path: inTestDir("third.exe")},
 			},
 			ExpectedErrs: []error{
 				// clunky
-				fmt.Errorf("open %s: permission denied", pathJoin(TestDir, "first.exe")),
+				fmt.Errorf("open %s: permission denied", inTestDir("first.exe")),
 			},
 
 			ParamSearch: TestDir,
 			ParamDirs:   []PairPathPerm{},
 			ParamFiles: []PairPathPerm{
-				{pathJoin(TestDir, "first.exe"), 0222},
-				{pathJoin(TestDir, "third.exe"), 0755},
+				{inTestDir("first.exe"), 0222},
+				{inTestDir("third.exe"), 0755},
 			},
 		},
 		{
 			Description: "nested file not accessible",
 			Expected: []Exe{
-				{Name: "first", Path: pathJoin(TestDir, "first.exe")},
-				{Name: "third", Path: pathJoin(TestDir, "third.exe")},
+				{Name: "first", Path: inTestDir("first.exe")},
+				{Name: "third", Path: inTestDir("third.exe")},
 			},
 			ExpectedErrs: []error{
 				// clunky
-				fmt.Errorf("open %s: permission denied", pathJoin(TestDir, "extra/second.exe")),
+				fmt.Errorf("open %s: permission denied", inTestDir("extra/second.exe")),
 			},
 
 			ParamSearch: TestDir,
 			ParamDirs: []PairPathPerm{
-				{pathJoin(TestDir, "extra"), 0755},
+				{inTestDir("extra"), 0755},
 			},
 			ParamFiles: []PairPathPerm{
-				{pathJoin(TestDir, "first.exe"), 0755},
-				{pathJoin(TestDir, "extra/second.exe"), 0122},
-				{pathJoin(TestDir, "third.exe"), 0755},
+				{inTestDir("first.exe"), 0755},
+				{inTestDir("extra/second.exe"), 0122},
+				{inTestDir("third.exe"), 0755},
 			},
 		},
 		{
 			Description: "different and wrong extensions",
 			Expected: []Exe{
-				{Name: "alpha", Path: pathJoin(TestDir, "alpha.exe")},
+				{Name: "alpha", Path: inTestDir("alpha.exe")},
 			},
 			ExpectedErrs: []error{},
 
 			ParamSearch: TestDir,
 			ParamDirs: []PairPathPerm{
-				{pathJoin(TestDir, "ost"), 0755},
+				{inTestDir("ost"), 0755},
 			},
 			ParamFiles: []PairPathPerm{
-				{pathJoin(TestDir, "alpha.exe"), 0755},
-				{pathJoin(TestDir, "beta.xe"), 0755},
-				{pathJoin(TestDir, "ost/zetta.mp3"), 0755},
+				{inTestDir("alpha.exe"), 0755},
+				{inTestDir("beta.xe"), 0755},
+				{inTestDir("ost/zetta.mp3"), 0755},
 			},
 		},
 	}
@@ -347,7 +347,7 @@ func TestExportToFile(t *testing.T) {
 			ExpectedErr: nil,
 
 			ParamFile: PairPathPerm{
-				Path: pathJoin(TestDir, "exportedFile"),
+				Path: inTestDir("exportedFile"),
 				Perm: 0755,
 			},
 			ParamList: []Exe{
@@ -361,7 +361,7 @@ func TestExportToFile(t *testing.T) {
 			ExpectedErr: fmt.Errorf("open /root/exportedFile: permission denied"),
 
 			ParamFile: PairPathPerm{
-				Path: pathJoin("/root", "exportedFile"),
+				Path: "/root/exportedFile",
 				Perm: 0755,
 			},
 			ParamList: []Exe{

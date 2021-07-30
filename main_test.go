@@ -23,7 +23,7 @@ func TestLaunch(t *testing.T) {
 
 			ParamArguments: []string{"-l"},
 			ParamRunner: Runner{
-				ListFile: pathJoin(TestDir, "wineladb"),
+				ListFile: inTestDir("wineladb"),
 			},
 		},
 		{
@@ -32,7 +32,7 @@ func TestLaunch(t *testing.T) {
 
 			ParamArguments: []string{"-r"},
 			ParamRunner: Runner{
-				ListFile: pathJoin(TestDir, "wineladb"),
+				ListFile: inTestDir("wineladb"),
 			},
 		},
 		{
@@ -41,7 +41,7 @@ func TestLaunch(t *testing.T) {
 
 			ParamArguments: []string{"-r", "a"},
 			ParamRunner: Runner{
-				ListFile: pathJoin(TestDir, "wineladb"),
+				ListFile: inTestDir("wineladb"),
 			},
 		},
 		{
@@ -50,7 +50,7 @@ func TestLaunch(t *testing.T) {
 
 			ParamArguments: []string{"-s", "/ii"},
 			ParamRunner: Runner{
-				ListFile: pathJoin(TestDir, "wineladb"),
+				ListFile: inTestDir("wineladb"),
 			},
 		},
 		{
@@ -59,7 +59,7 @@ func TestLaunch(t *testing.T) {
 
 			ParamArguments: []string{"-s"},
 			ParamRunner: Runner{
-				ListFile: pathJoin(TestDir, "wineladb"),
+				ListFile: inTestDir("wineladb"),
 			},
 		},
 	}
