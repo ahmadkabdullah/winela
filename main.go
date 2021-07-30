@@ -9,7 +9,9 @@ import (
 func main() {
 	// only launch if given an argument
 	if len(os.Args) > 1 {
-		var returnedCode = Launch(os.Args[1:])
+		// let function handle import/export of runner
+		var r = RunnerInitMake()
+		var returnedCode = Launch(r, os.Args[1:])
 		os.Exit(returnedCode)
 	}
 
@@ -22,10 +24,7 @@ func main() {
 
 // central function for usage of functions
 // and handling of arguments
-func Launch(args []string) int {
-	// let function handle import/export of runner
-	var rnr = RunnerInitMake()
-
+func Launch(rnr Runner, args []string) int {
 	switch args[0] {
 	case "-r", "-R":
 		// alert if no number given
@@ -48,7 +47,7 @@ func Launch(args []string) int {
 			var runErr = rnr.RunFromList(convertedInt, true)
 			if runErr != nil {
 				fmt.Printf("run error: %s\n", runErr.Error())
-				return 2
+				return 3
 			}
 			fmt.Printf("stat: number %v was run\n", convertedInt)
 		// if "R" then don't fork
@@ -57,7 +56,7 @@ func Launch(args []string) int {
 			var runErr = rnr.RunFromList(convertedInt, false)
 			if runErr != nil {
 				fmt.Printf("run error: %s\n", runErr.Error())
-				return 2
+				return 3
 			}
 			fmt.Printf("stat: number %v finished running\n", convertedInt)
 		}
@@ -88,7 +87,7 @@ func Launch(args []string) int {
 			for _, e := range scanErr {
 				fmt.Printf("scanning error: %s\n", e.Error())
 			}
-			return 2
+			return 3
 		}
 
 		fmt.Printf("stat: dir %s was scanned\n", dirToScan)
