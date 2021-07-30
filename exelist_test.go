@@ -211,7 +211,7 @@ func TestImportFromScan(t *testing.T) {
 			},
 		},
 		{
-			Description: "dir not accessable",
+			Description: "dir not accessible",
 			Expected: []exe{
 				{Name: "first", Path: PathJoin(TestDir, "first.exe")},
 				{Name: "third", Path: PathJoin(TestDir, "third.exe")},
@@ -232,7 +232,7 @@ func TestImportFromScan(t *testing.T) {
 			},
 		},
 		{
-			Description: "file not accessable",
+			Description: "file not accessible",
 			Expected: []exe{
 				{Name: "third", Path: PathJoin(TestDir, "third.exe")},
 			},
@@ -249,7 +249,7 @@ func TestImportFromScan(t *testing.T) {
 			},
 		},
 		{
-			Description: "nested file not accessable",
+			Description: "nested file not accessible",
 			Expected: []exe{
 				{Name: "first", Path: PathJoin(TestDir, "first.exe")},
 				{Name: "third", Path: PathJoin(TestDir, "third.exe")},
