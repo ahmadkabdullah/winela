@@ -63,7 +63,7 @@ func RunnerInitMake() (ret Runner) {
 	case false:
 		// if it exists then import the list from it
 		var importedList, importErr = ImportFromFile(ret.ListFile)
-		// and if no errors occured set it to returning list
+		// and if no errors occurred set it to returning list
 		if importErr == nil {
 			ret.List = importedList
 		}

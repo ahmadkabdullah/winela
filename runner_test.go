@@ -47,8 +47,8 @@ func TestRunnerReadConfig(t *testing.T) {
 				ConfigFile: PathJoin(TestDir, "winelarc"),
 			},
 			ParamConfigString: "Program : wine-staging\n" + "ProgramArgs : ",
-			ParamConfigFile: PathJoin(TestDir, "winelarc"),
-			ParamModifyTo: "Program : wine\n" + "ProgramArgs : ",
+			ParamConfigFile:   PathJoin(TestDir, "winelarc"),
+			ParamModifyTo:     "Program : wine\n" + "ProgramArgs : ",
 		},
 	}
 
