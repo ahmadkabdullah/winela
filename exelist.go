@@ -9,9 +9,8 @@ import (
 )
 
 type exe struct {
-	Number int
-	Name   string
-	Path   string
+	Name string
+	Path string
 }
 
 // read a file with a specific (exelist) format and get the list in it
@@ -27,7 +26,7 @@ func ImportFromFile(fileName string) (retList []exe, retErr error) {
 	var entriesInFile = strings.Split(string(data), "\n")
 
 	// loop through the strings
-	for index, entryFull := range entriesInFile {
+	for _, entryFull := range entriesInFile {
 
 		// split each line into two parts
 		var entryInTwo = strings.Split(entryFull, "=>")
@@ -40,9 +39,8 @@ func ImportFromFile(fileName string) (retList []exe, retErr error) {
 
 		// append the two parts each to a field in an exe struct
 		var tempExe = exe{
-			Number: index + 1,
-			Name:   strings.TrimSpace(entryInTwo[0]),
-			Path:   strings.TrimSpace(entryInTwo[1]),
+			Name: strings.TrimSpace(entryInTwo[0]),
+			Path: strings.TrimSpace(entryInTwo[1]),
 		}
 
 		// append the exe struct to the returned list
@@ -69,7 +67,7 @@ func ImportFromScan(dirName string) (retList []exe, retErr []error) {
 	}
 
 	// go through dir entries
-	for index, dirEntry := range dirEntryList {
+	for _, dirEntry := range dirEntryList {
 
 		// create vars for the entry
 		var (
@@ -107,9 +105,8 @@ func ImportFromScan(dirName string) (retList []exe, retErr []error) {
 			// then add to list
 			retList = append(retList,
 				exe{
-					Number: index + 1,
-					Name:   dirEntryNameNoSuffix,
-					Path:   dirEntryPath,
+					Name: dirEntryNameNoSuffix,
+					Path: dirEntryPath,
 				},
 			)
 		}

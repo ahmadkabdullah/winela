@@ -28,9 +28,9 @@ func TestExportImport(t *testing.T) {
 		{
 			Description: "scan a dir and export result to a file then import back from exported file",
 			Expected: []exe{
-				{1, "flap", PathJoin(TestDir, "games/flap.exe")},
-				{2, "paint", PathJoin(TestDir, "ms/paint.exe")},
-				{3, "pt", PathJoin(TestDir, "pt.exe")},
+				{"flap", PathJoin(TestDir, "games/flap.exe")},
+				{"paint", PathJoin(TestDir, "ms/paint.exe")},
+				{"pt", PathJoin(TestDir, "pt.exe")},
 			},
 			ExpectedErrs: []error{},
 
@@ -120,7 +120,7 @@ func TestImportFromFile(t *testing.T) {
 	}{
 		{
 			Description: "import regular file",
-			Expected:    []exe{{1, "okay", "~/Downloads/okay.exe"}},
+			Expected:    []exe{{"okay", "~/Downloads/okay.exe"}},
 			ExpectedErr: nil,
 
 			ParamContent: "okay => ~/Downloads/okay.exe\n",
@@ -137,8 +137,8 @@ func TestImportFromFile(t *testing.T) {
 		{
 			Description: "multiple separators in one line in file",
 			Expected: []exe{
-				{1, "okay", "~/Downloads/okay.exe"},
-				{2, "yes", "~/go/bin/yes.exe"},
+				{"okay", "~/Downloads/okay.exe"},
+				{"yes", "~/go/bin/yes.exe"},
 			},
 			ExpectedErr: nil,
 
@@ -351,8 +351,8 @@ func TestExportToFile(t *testing.T) {
 				Perm: 0755,
 			},
 			ParamList: []exe{
-				{1, "ck", "~/Games/ck/ck.exe"},
-				{2, "fff", "~/Downloads/fff.exe"},
+				{"ck", "~/Games/ck/ck.exe"},
+				{"fff", "~/Downloads/fff.exe"},
 			},
 		},
 		{
@@ -365,8 +365,8 @@ func TestExportToFile(t *testing.T) {
 				Perm: 0755,
 			},
 			ParamList: []exe{
-				{1, "ck", "~/Games/ck/ck.exe"},
-				{2, "fff", "~/Downloads/fff.exe"},
+				{"ck", "~/Games/ck/ck.exe"},
+				{"fff", "~/Downloads/fff.exe"},
 			},
 		},
 	}

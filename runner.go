@@ -127,8 +127,8 @@ func (r Runner) RunFromList(elementNumber int, shouldFork bool) error {
 	var foundTarget bool
 
 	// see if target exe is in the list
-	for _, exeEntry := range r.List {
-		if exeEntry.Number == elementNumber {
+	for index, exeEntry := range r.List {
+		if index+1 == elementNumber {
 			targetExe = exeEntry
 			foundTarget = true
 			break
@@ -192,8 +192,8 @@ func (r Runner) RunFromList(elementNumber int, shouldFork bool) error {
 
 // return the list as a numbered string
 func (r Runner) DisplayList() (ret string) {
-	for _, entry := range r.List {
-		ret += fmt.Sprintf("%v %v\n", entry.Number, entry.Name)
+	for index, entry := range r.List {
+		ret += fmt.Sprintf("%v %v\n", index+1, entry.Name)
 	}
 	return
 }

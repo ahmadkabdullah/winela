@@ -112,7 +112,7 @@ func TestRunFromList(t *testing.T) {
 				Program:     "wine",
 				ProgramArgs: "",
 				List: []exe{
-					{1, "PS", PathJoin(TestDir, "PS.exe")},
+					{"PS", PathJoin(TestDir, "PS.exe")},
 				},
 			},
 			ParamRunProg: 5,
@@ -151,8 +151,8 @@ func TestDisplayList(t *testing.T) {
 				Program:     "wine",
 				ProgramArgs: "",
 				List: []exe{
-					{1, "sr", PathJoin(TestDir, "sr.exe")},
-					{2, "lon", PathJoin(TestDir, "lon.exe")},
+					{"sr", PathJoin(TestDir, "sr.exe")},
+					{"lon", PathJoin(TestDir, "lon.exe")},
 				},
 			},
 		},
