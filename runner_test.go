@@ -15,7 +15,6 @@ func TestRunnerReadConfig(t *testing.T) {
 		Description      string
 		Expected         Runner
 		ParamRunner      Runner
-		ParamConfigFile  string
 		ParamConfigStart string
 		ParamConfigAfter string
 	}{
@@ -30,7 +29,6 @@ func TestRunnerReadConfig(t *testing.T) {
 			ParamRunner: Runner{
 				ConfigFile: inTestDir("winelarc"),
 			},
-			ParamConfigFile: inTestDir("winelarc"),
 			ParamConfigStart: "Program = wine-staging\n" +
 				"ProgramArgs = ",
 			ParamConfigAfter: "",
@@ -46,7 +44,6 @@ func TestRunnerReadConfig(t *testing.T) {
 			ParamRunner: Runner{
 				ConfigFile: inTestDir("winelarc"),
 			},
-			ParamConfigFile:  inTestDir("winelarc"),
 			ParamConfigStart: "Program = wine-staging\n" + "ProgramArgs = ",
 			ParamConfigAfter: "Program = wine\n" + "ProgramArgs = ",
 		},
@@ -61,7 +58,6 @@ func TestRunnerReadConfig(t *testing.T) {
 			ParamRunner: Runner{
 				ConfigFile: inTestDir("winelarc"),
 			},
-			ParamConfigFile:  inTestDir("winelarc"),
 			ParamConfigStart: "Prog = wine\n" + "Something = ",
 			ParamConfigAfter: "",
 		},
@@ -70,12 +66,12 @@ func TestRunnerReadConfig(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.Description, func(t *testing.T) {
 			// write
-			var _ = ioutil.WriteFile(testCase.ParamConfigFile, []byte(testCase.ParamConfigStart), os.FileMode(0755))
+			var _ = ioutil.WriteFile(testCase.ParamRunner.ConfigFile, []byte(testCase.ParamConfigStart), os.FileMode(0755))
 
 			// first read
 			testCase.ParamRunner.runnerReadConfig()
 
-			// test straight away if there is no value to modify to
+			// test straight away if there is no config after (to modify to)
 			// else do modification and read again then test
 			if testCase.ParamConfigAfter == "" {
 				// test write read
@@ -84,7 +80,7 @@ func TestRunnerReadConfig(t *testing.T) {
 				}
 			} else {
 				// edit
-				var _ = ioutil.WriteFile(testCase.ParamConfigFile, []byte(testCase.ParamConfigAfter), os.FileMode(0755))
+				var _ = ioutil.WriteFile(testCase.ParamRunner.ConfigFile, []byte(testCase.ParamConfigAfter), os.FileMode(0755))
 				// second read
 				testCase.ParamRunner.runnerReadConfig()
 				// test modified read
