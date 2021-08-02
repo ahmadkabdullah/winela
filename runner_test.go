@@ -30,9 +30,9 @@ func TestRunnerReadConfig(t *testing.T) {
 			ParamRunner: Runner{
 				ConfigFile: inTestDir("winelarc"),
 			},
-			ParamConfigStart: "Program : wine-staging\n" +
-				"ProgramArgs : ",
-			ParamConfigFile:  inTestDir("winelarc"),
+			ParamConfigFile: inTestDir("winelarc"),
+			ParamConfigStart: "Program = wine-staging\n" +
+				"ProgramArgs = ",
 			ParamConfigAfter: "",
 		},
 		{
@@ -47,8 +47,8 @@ func TestRunnerReadConfig(t *testing.T) {
 				ConfigFile: inTestDir("winelarc"),
 			},
 			ParamConfigFile:  inTestDir("winelarc"),
-			ParamConfigStart: "Program : wine-staging\n" + "ProgramArgs : ",
-			ParamConfigAfter: "Program : wine\n" + "ProgramArgs : ",
+			ParamConfigStart: "Program = wine-staging\n" + "ProgramArgs = ",
+			ParamConfigAfter: "Program = wine\n" + "ProgramArgs = ",
 		},
 		{
 			Description: "read a config with left values",
@@ -62,7 +62,7 @@ func TestRunnerReadConfig(t *testing.T) {
 				ConfigFile: inTestDir("winelarc"),
 			},
 			ParamConfigFile:  inTestDir("winelarc"),
-			ParamConfigStart: "Prog : wine\n" + "Something: ",
+			ParamConfigStart: "Prog = wine\n" + "Something = ",
 			ParamConfigAfter: "",
 		},
 	}

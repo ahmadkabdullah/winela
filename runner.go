@@ -80,7 +80,7 @@ func (r *Runner) runnerReadConfig() {
 	var strData = string(readData)
 	var lines = strings.Split(strData, "\n")
 	for _, line := range lines {
-		var pair = strings.Split(line, ":")
+		var pair = strings.Split(line, "=")
 
 		if len(pair) != 2 {
 			continue
