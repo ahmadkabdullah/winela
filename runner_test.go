@@ -96,7 +96,47 @@ func TestRunnerReadConfig(t *testing.T) {
 	}
 }
 
-func TestWriteConfig(t *testing.T) {
+func TestRunnerWriteConfig(t *testing.T) {
+	os.MkdirAll(TestDir, 0755)
+	defer os.RemoveAll(TestDir)
+
+	var testTable = []struct {
+		Description string
+		Expected    string
+		ExpectedErr error
+
+		ParamRunner Runner
+	}{
+		{
+			Description: "write a full regular config",
+			Expected:    "Program = wine\nArgs = \n",
+
+			ParamRunner: Runner{
+				Program:     "wine",
+				ProgramArgs: "",
+				ConfigFile:  inTestDir("winelarc"),
+			},
+		},
+	}
+
+	for _, testCase := range testTable {
+		t.Run(testCase.Description, func(t *testing.T) {
+			// write using function
+			testCase.ParamRunner.RunnerWriteConfig()
+
+			// read as a single string
+			var data, gottenErr = ioutil.ReadFile(testCase.ParamRunner.ConfigFile)
+			var gotten = string(data)
+
+			if testCase.Expected != gotten {
+				errorExpGot(t, testCase.Expected, gotten, false)
+			}
+
+			if equalErrorList(t, []error{testCase.ExpectedErr}, []error{gottenErr}) == false {
+				errorExpGot(t, testCase.ExpectedErr, gottenErr, true)
+			}
+		})
+	}
 }
 
 func TestRunFromList(t *testing.T) {
@@ -104,25 +144,13 @@ func TestRunFromList(t *testing.T) {
 	defer os.RemoveAll(TestDir)
 
 	var testTable = []struct {
-		Description  string
-		ExpectedErr  error
+		Description string
+		ExpectedErr error
+
 		ParamRunner  Runner
 		ParamRunProg int
 		ParamFork    bool
 	}{
-		// {
-		// 	Description: "fork launch first in list with wine and its params",
-		// 	ExpectedErr: nil,
-		// 	ParamRunner: Runner{
-		// 		Program:     "wine",
-		// 		ProgramArgs: "",
-		// 		List: []exe{
-		// 			{1, "rufus", PathJoin(TestDir, "rufus.exe")},
-		// 		},
-		// 	},
-		// 	ParamRunProg: 1,
-		// 	ParamFork: true,
-		// },
 		{
 			Description: "fork launch a number out of the range of list",
 			ExpectedErr: fmt.Errorf("exe number %d: not in list", 5),
@@ -140,13 +168,6 @@ func TestRunFromList(t *testing.T) {
 
 	for _, testCase := range testTable {
 		t.Run(testCase.Description, func(t *testing.T) {
-			// // copy
-			// var readData, _ = ioutil.ReadFile("~/Downloads/rufus.exe")
-			// // paste
-			// ioutil.WriteFile(testCase.ParamRunner.List[0].Path, readData, os.FileMode(0755))
-			// // remove later
-			// defer os.Remove(testCase.ParamRunner.List[0].Path)
-
 			var gottenErr = testCase.ParamRunner.runFromList(testCase.ParamRunProg, testCase.ParamFork)
 
 			if equalErrorList(t, []error{testCase.ExpectedErr}, []error{gottenErr}) == false {
