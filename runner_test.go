@@ -12,15 +12,15 @@ func TestRunnerReadConfig(t *testing.T) {
 	defer os.RemoveAll(TestDir)
 
 	var testTable = []struct {
-		Description       string
-		Expected          Runner
-		ParamRunner       Runner
-		ParamConfigString string
-		ParamConfigFile   string
-		ParamModifyTo     string
+		Description      string
+		Expected         Runner
+		ParamRunner      Runner
+		ParamConfigFile  string
+		ParamConfigStart string
+		ParamConfigAfter string
 	}{
 		{
-			Description: "read a config with program set us wine staging",
+			Description: "read a config with program set as wine staging",
 			Expected: Runner{
 				Program:     "wine-staging",
 				ProgramArgs: "",
@@ -30,13 +30,13 @@ func TestRunnerReadConfig(t *testing.T) {
 			ParamRunner: Runner{
 				ConfigFile: inTestDir("winelarc"),
 			},
-			ParamConfigString: "Program : wine-staging\n" +
+			ParamConfigStart: "Program : wine-staging\n" +
 				"ProgramArgs : ",
-			ParamConfigFile: inTestDir("winelarc"),
-			ParamModifyTo:   "",
+			ParamConfigFile:  inTestDir("winelarc"),
+			ParamConfigAfter: "",
 		},
 		{
-			Description: "read a config with program set us wine staging",
+			Description: "read a config after it gets edited",
 			Expected: Runner{
 				Program:     "wine",
 				ProgramArgs: "",
@@ -46,30 +46,45 @@ func TestRunnerReadConfig(t *testing.T) {
 			ParamRunner: Runner{
 				ConfigFile: inTestDir("winelarc"),
 			},
-			ParamConfigString: "Program : wine-staging\n" + "ProgramArgs : ",
-			ParamConfigFile:   inTestDir("winelarc"),
-			ParamModifyTo:     "Program : wine\n" + "ProgramArgs : ",
+			ParamConfigFile:  inTestDir("winelarc"),
+			ParamConfigStart: "Program : wine-staging\n" + "ProgramArgs : ",
+			ParamConfigAfter: "Program : wine\n" + "ProgramArgs : ",
+		},
+		{
+			Description: "read a config with left values",
+			Expected: Runner{
+				Program:     "",
+				ProgramArgs: "",
+				List:        []Exe{},
+				ConfigFile:  inTestDir("winelarc"),
+			},
+			ParamRunner: Runner{
+				ConfigFile: inTestDir("winelarc"),
+			},
+			ParamConfigFile:  inTestDir("winelarc"),
+			ParamConfigStart: "Prog : wine\n" + "Something: ",
+			ParamConfigAfter: "",
 		},
 	}
 
 	for _, testCase := range testTable {
 		t.Run(testCase.Description, func(t *testing.T) {
 			// write
-			var _ = ioutil.WriteFile(testCase.ParamConfigFile, []byte(testCase.ParamConfigString), os.FileMode(0755))
+			var _ = ioutil.WriteFile(testCase.ParamConfigFile, []byte(testCase.ParamConfigStart), os.FileMode(0755))
 
 			// first read
 			testCase.ParamRunner.runnerReadConfig()
 
 			// test straight away if there is no value to modify to
 			// else do modification and read again then test
-			if testCase.ParamModifyTo == "" {
+			if testCase.ParamConfigAfter == "" {
 				// test write read
 				if fmt.Sprint(testCase.ParamRunner) != fmt.Sprint(testCase.Expected) {
 					errorExpGot(t, testCase.Expected, testCase.ParamRunner, false)
 				}
 			} else {
 				// edit
-				var _ = ioutil.WriteFile(testCase.ParamConfigFile, []byte(testCase.ParamModifyTo), os.FileMode(0755))
+				var _ = ioutil.WriteFile(testCase.ParamConfigFile, []byte(testCase.ParamConfigAfter), os.FileMode(0755))
 				// second read
 				testCase.ParamRunner.runnerReadConfig()
 				// test modified read
@@ -79,6 +94,9 @@ func TestRunnerReadConfig(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestWriteConfig(t *testing.T) {
 }
 
 func TestRunFromList(t *testing.T) {
