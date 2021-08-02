@@ -106,11 +106,32 @@ func TestRunnerWriteConfig(t *testing.T) {
 		{
 			Description: "write a full regular config",
 			Expected:    "Program = wine\nArgs = \n",
+			ExpectedErr: nil,
 
 			ParamRunner: Runner{
 				Program:     "wine",
 				ProgramArgs: "",
 				ConfigFile:  inTestDir("winelarc"),
+			},
+		},
+		{
+			Description: "write only config program property as wine-staging",
+			Expected:    "Program = wine-staging\nArgs = \n",
+			ExpectedErr: nil,
+
+			ParamRunner: Runner{
+				Program:    "wine-staging",
+				ConfigFile: inTestDir("winelarc"),
+			},
+		},
+		{
+			Description: "no write permission for config file location",
+			Expected:    "",
+			ExpectedErr: fmt.Errorf("open ///winelarc: no such file or directory"),
+
+			ParamRunner: Runner{
+				Program:    "wine-staging",
+				ConfigFile: "///winelarc",
 			},
 		},
 	}
