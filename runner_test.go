@@ -105,7 +105,7 @@ func TestRunnerWriteConfig(t *testing.T) {
 	}{
 		{
 			Description: "write a full regular config",
-			Expected:    "Program = wine\nArgs = \n",
+			Expected:    "Program = wine\nArguments = \nDefaultDir = \n",
 			ExpectedErr: nil,
 
 			ParamRunner: Runner{
@@ -116,7 +116,7 @@ func TestRunnerWriteConfig(t *testing.T) {
 		},
 		{
 			Description: "write only config program property as wine-staging",
-			Expected:    "Program = wine-staging\nArgs = \n",
+			Expected:    "Program = wine-staging\nArguments = \nDefaultDir = \n",
 			ExpectedErr: nil,
 
 			ParamRunner: Runner{

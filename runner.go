@@ -13,6 +13,7 @@ import (
 type Runner struct {
 	Program     string
 	ProgramArgs string
+	DefaultDir  string
 	List        []Exe
 
 	ConfigFile string
@@ -30,6 +31,8 @@ func runnerInitMake() (ret Runner) {
 	// set defaults
 	ret.Program = "wine"
 	ret.ProgramArgs = ""
+	var homedir, _ = os.UserHomeDir()
+	ret.DefaultDir = homedir
 	ret.List = []Exe{}
 	ret.ConfigFile = path.Join(progDir, "winelarc")
 	ret.ListFile = path.Join(progDir, "wineladb")
@@ -76,24 +79,32 @@ func runnerInitMake() (ret Runner) {
 // read the configuration from previously saved file
 // into the current runner (startup, init)
 func (r *Runner) runnerReadConfig() {
+	// read the config file into string
 	var readData, _ = ioutil.ReadFile(r.ConfigFile)
 	var strData = string(readData)
-	var lines = strings.Split(strData, "\n")
-	for _, line := range lines {
-		var pair = strings.Split(line, "=")
 
+	// split into lines
+	var lines = strings.Split(strData, "\n")
+
+	for _, line := range lines {
+		// split into pairs
+		var pair = strings.Split(line, "=")
 		if len(pair) != 2 {
 			continue
 		}
 
+		// trim pair and reassign
 		var left = strings.TrimSpace(pair[0])
 		var right = strings.TrimSpace(pair[1])
 
+		// set values as found in config
 		switch left {
 		case "Program":
 			r.Program = right
-		case "Args":
+		case "Arguments":
 			r.ProgramArgs = right
+		case "DefaultDir":
+			r.DefaultDir = right
 		}
 	}
 }
@@ -101,10 +112,10 @@ func (r *Runner) runnerReadConfig() {
 // write the configuration in the runner into a file
 func (r *Runner) RunnerWriteConfig() {
 	var leftList = []string{
-		"Program", "Args",
+		"Program", "Arguments", "DefaultDir",
 	}
 	var rightList = []string{
-		r.Program, r.ProgramArgs,
+		r.Program, r.ProgramArgs, r.DefaultDir,
 	}
 
 	var strList string

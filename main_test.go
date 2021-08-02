@@ -54,8 +54,8 @@ func TestLaunch(t *testing.T) {
 			},
 		},
 		{
-			Description: "scan option no directory given",
-			Expected:    0,
+			Description: "scan option no directory given and no default",
+			Expected:    1,
 
 			ParamArguments: []string{"-s"},
 			ParamRunner: Runner{

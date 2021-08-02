@@ -67,15 +67,12 @@ func launch(rnr Runner, args []string) int {
 		var dirToScan string
 		switch len(args) {
 		case 1:
-			fmt.Printf("stat: no scan dir given - assuming home dir\n")
-
-			var homedir, locateErr = os.UserHomeDir()
-			if locateErr != nil {
-				fmt.Printf("locating home dir error: %s\n", locateErr.Error())
-				return 2
+			fmt.Printf("stat: no scan dir given so assume default dir\n")
+			if rnr.DefaultDir == "" {
+				fmt.Printf("input error: no default dir found\n")
+				return 1
 			}
-
-			dirToScan = homedir
+			dirToScan = rnr.DefaultDir
 		case 2:
 			dirToScan = args[1]
 		}
