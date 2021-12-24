@@ -79,10 +79,24 @@ func importFromScan(dirName string) (retList []Exe, retErr []error) {
 
 		// act depending on it being a dir or file
 		if dirEntry.IsDir() {
+			// directories to skip
+			switch dirEntry.Name() {
+			case "Windows":
+				fallthrough
+			case "windows":
+				fallthrough
+			case ".cache":
+				fallthrough
+			case ".config":
+				continue
+			}
+
 			// recursive call to read dirs
 			var recurList, recurErr = importFromScan(dirEntryPath)
+
 			// assign the recursive err to return one
 			retErr = recurErr
+
 			// add result to caller
 			retList = append(retList, recurList...)
 
